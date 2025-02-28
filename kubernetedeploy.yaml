@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: insurance-deploy
+  labels:
+    app: insurance-deploy-lbl
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: insurance-app
+  template:
+    metadata:
+      labels:
+        app: insurance-app
+    spec:
+      containers:
+      - name: insurance-container
+        image: shivanggupta998/insurance-app:latest
+        ports:
+        - containerPort: 8081
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: insurance-np-service
+  labels:
+    app: insurance-np-app
+spec:
+  selector:
+    app: insurance-deploy-lbl
+
+  type: NodePort
+  ports:
+  - nodePort: 31032  
+    port: 8081
+    targetPort: 8081
